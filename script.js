@@ -1,120 +1,82 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+const output = document.getElementById('output');
+const amountInput = document.getElementById('amount');
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    height: 100vh;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Roboto Mono', monospace;
-    overflow: hidden;
+function log(text) {
+    output.innerHTML += text + '\n';
+    output.scrollTop = output.scrollHeight;
 }
 
-.terminal {
-    width: 90%;
-    max-width: 900px;
-    height: 85vh;
-    background: #0d0d0d;
-    border-radius: 12px;
-    box-shadow: 
-        0 0 30px rgba(0, 255, 100, 0.4),
-        inset 0 0 20px rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid #0f0;
+function generateCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let code = '';
+    for (let i = 0; i < 24; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
 }
 
-.header {
-    background: #111;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #0f0;
+async function checkCode(code) {
+    const url = `https://discord.com/api/v9/entitlements/gift-codes/${code}?with_application=false&with_subscription_plan=true`;
+    try {
+        const res = await fetch(url);
+        if (res.status === 200) return { valid: true };
+        if (res.status === 429) {
+            const data = await res.json();
+            const wait = (data.retry_after || 6) * 1000;
+            log(`<span class="ratelimited">> Rate limited. Waiting ${data.retry_after || 6}s...</span>`);
+            await new Promise(r => setTimeout(r, wait));
+            return { valid: false, status: 'Rate Limited' };
+        }
+    } catch (e) {}
+    return { valid: false, status: 'Invalid' };
 }
 
-.title {
-    color: #0f9;
-    font-size: 1.1em;
-    font-weight: bold;
-    text-shadow: 0 0 10px #0f0;
-}
+// Generate Only
+document.getElementById('generate-only').onclick = () => {
+    const amount = parseInt(amountInput.value) || 10;
+    if (amount < 1 || amount > 100) {
+        log('> Error: Amount must be 1-100');
+        return;
+    }
 
-.indicators .dot {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-left: 8px;
-}
+    log(`\n> Generating ${amount} Nitro codes...\n`);
 
-.red { background: #f55; box-shadow: 0 0 10px #f55; }
-.yellow { background: #ff5; box-shadow: 0 0 10px #ff5; }
-.green { background: #0f0; box-shadow: 0 0 10px #0f0; }
+    for (let i = 0; i < amount; i++) {
+        const code = generateCode();
+        log(`https://discord.gift/<strong>${code}</strong>`);
+    }
 
-.output {
-    flex: 1;
-    padding: 20px;
-    color: #0f9;
-    font-size: 1.1em;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    line-height: 1.6;
-}
+    log(`\n> ${amount} codes generated.`);
+};
 
-.output pre {
-    margin: 0;
-}
+// Generate & Check
+document.getElementById('generate-check').onclick = async () => {
+    const amount = parseInt(amountInput.value) || 10;
+    if (amount < 1 || amount > 100) {
+        log('> Error: Amount must be 1-100');
+        return;
+    }
 
-.input-bar {
-    padding: 15px 20px;
-    background: #111;
-    border-top: 1px solid #0f0;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+    log(`\n> Generating and checking ${amount} codes...\n`);
 
-.prompt {
-    color: #0ff;
-    font-weight: bold;
-    text-shadow: 0 0 8px #0ff;
-}
+    for (let i = 0; i < amount; i++) {
+        const code = generateCode();
+        log(`https://discord.gift/<strong>${code}</strong>`);
+        log('> Checking...');
 
-#amount {
-    width: 100px;
-    padding: 10px;
-    background: #000;
-    border: 1px solid #0f0;
-    color: #0f9;
-    font-family: 'Roboto Mono';
-    border-radius: 6px;
-    box-shadow: 0 0 15px rgba(0, 255, 100, 0.3);
-}
+        const result = await checkCode(code);
+        if (result.valid) {
+            log(`<span class="valid">>>> VALID NITRO FOUND!!!</span>`);
+        } else {
+            log(`> ${result.status || 'Invalid'}`);
+        }
+        log(''); // spacing
+    }
 
-.input-bar button {
-    padding: 10px 20px;
-    background: transparent;
-    border: 1px solid #0f0;
-    color: #0f9;
-    font-family: 'Roboto Mono';
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 0 10px rgba(0, 255, 100, 0.3);
-}
+    log(`> Scan complete.`);
+};
 
-.input-bar button:hover {
-    background: #0f0;
-    color: #000;
-    box-shadow: 0 0 25px #0f0;
-}
-
-.valid { color: #0f0; text-shadow: 0 0 15px #0f0; font-weight: bold; }
-.invalid { color: #f66; }
-.ratelimited { color: #ff0; }
+// Clear
+document.getElementById('clear').onclick = () => {
+    output.innerHTML = '> Terminal cleared.\n> Ready.';
+};
