@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swavey Nitro Terminal</title>
+    <title>Swavey Nitro Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="terminal">
         <div class="header">
-            <span class="title">SWAVEY NITRO TERMINAL v2.0</span>
-            <div class="indicators">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
-            </div>
+            <span class="title">SWAVEY NITRO GENERATOR</span>
         </div>
         
         <div class="output" id="output">
-            <pre>> System online. Nitro generation module loaded.
-> Type amount and select action.
-> Ready.</pre>
+            <pre>> Swavey Nitro Generator v3 Loaded
+> Advanced checking enabled
+> Enter amount (1-100) and generate
+> Good luck!</pre>
         </div>
 
         <div class="input-bar">
-            <span class="prompt">> Amount:</span>
-            <input type="number" id="amount" min="1" max="100" value="10" placeholder="1-100">
+            <span class="prompt">Amount:</span>
+            <input type="number" id="amount" min="1" max="100" value="10">
             
-            <button id="generate-only">Generate Only</button>
+            <button id="generate-only">Generate</button>
             <button id="generate-check">Generate & Check</button>
             <button id="clear">Clear</button>
         </div>
