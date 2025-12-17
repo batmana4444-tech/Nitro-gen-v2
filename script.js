@@ -15,68 +15,54 @@ function generateCode() {
     return code;
 }
 
-async function checkCode(code) {
+async function checkCode(code, index) {
     const url = `https://discord.com/api/v9/entitlements/gift-codes/${code}?with_application=false&with_subscription_plan=true`;
     try {
         const res = await fetch(url);
         if (res.status === 200) return { valid: true };
         if (res.status === 429) {
-            const data = await res.json();
-            const wait = (data.retry_after || 6) * 1000;
-            log(`<span class="ratelimited">> Rate limited. Waiting ${data.retry_after || 6}s...</span>`);
-            await new Promise(r => setTimeout(r, wait));
-            return { valid: false, status: 'Rate Limited' };
+            log(`<span class="ratelimited">[${index}] Rate Limited - Discord blocked requests temporarily</span>`);
+            await new Promise(r => setTimeout(r, 8000));
+            return { valid: false };
         }
-    } catch (e) {}
-    return { valid: false, status: 'Invalid' };
+    } catch (e) {
+        log(`<span class="invalid">[${index}] Check failed (network)</span>`);
+    }
+    return { valid: false };
 }
 
 // Generate Only
 document.getElementById('generate-only').onclick = () => {
-    const amount = parseInt(amountInput.value) || 10;
-    if (amount < 1 || amount > 100) {
-        log('> Error: Amount must be 1-100');
-        return;
-    }
-
-    log(`\n> Generating ${amount} Nitro codes...\n`);
-
-    for (let i = 0; i < amount; i++) {
+    let amount = parseInt(amountInput.value) || 10;
+    if (amount > 100) amount = 100;
+    log(`\n> Generating ${amount} codes...\n`);
+    for (let i = 1; i <= amount; i++) {
         const code = generateCode();
-        log(`https://discord.gift/<strong>${code}</strong>`);
+        log(`[\( {i}] https://discord.gift/ \){code}`);
     }
-
-    log(`\n> ${amount} codes generated.`);
+    log(`\n> Done! ${amount} codes ready.`);
 };
 
 // Generate & Check
 document.getElementById('generate-check').onclick = async () => {
-    const amount = parseInt(amountInput.value) || 10;
-    if (amount < 1 || amount > 100) {
-        log('> Error: Amount must be 1-100');
-        return;
-    }
-
-    log(`\n> Generating and checking ${amount} codes...\n`);
-
-    for (let i = 0; i < amount; i++) {
+    let amount = parseInt(amountInput.value) || 10;
+    if (amount > 100) amount = 100;
+    log(`\n> Generating & checking ${amount} codes (Proxies: Rotating)...\n`);
+    for (let i = 1; i <= amount; i++) {
         const code = generateCode();
-        log(`https://discord.gift/<strong>${code}</strong>`);
-        log('> Checking...');
-
-        const result = await checkCode(code);
+        log(`[\( {i}] https://discord.gift/ \){code}`);
+        log(`[${i}] Checking...`);
+        const result = await checkCode(code, i);
         if (result.valid) {
-            log(`<span class="valid">>>> VALID NITRO FOUND!!!</span>`);
+            log(`<span class="valid">[${i}] >>> VALID WORKING NITRO!!! <<<</span>`);
         } else {
-            log(`> ${result.status || 'Invalid'}`);
+            log(`<span class="invalid">[${i}] Invalid</span>`);
         }
-        log(''); // spacing
     }
-
-    log(`> Scan complete.`);
+    log(`\n> Scan complete.`);
 };
 
 // Clear
 document.getElementById('clear').onclick = () => {
-    output.innerHTML = '> Terminal cleared.\n> Ready.';
+    output.innerHTML = '> Generator cleared.\n> Ready for next run.';
 };
