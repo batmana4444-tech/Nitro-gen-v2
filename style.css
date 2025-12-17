@@ -1,200 +1,120 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     height: 100vh;
     background: #000;
-    color: #fff;
-    font-family: 'Rajdhani', sans-serif;
-    overflow: hidden;
-    position: relative;
-}
-
-/* Floating Neon Particles Background */
-.particles {
-    position: absolute;
-    width: 100%; height: 100%;
-    background: transparent;
-}
-
-.particle {
-    position: absolute;
-    background: #0ff;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-    opacity: 0.6;
-    animation: float linear infinite;
-}
-
-@keyframes float {
-    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-    10% { opacity: 0.6; }
-    90% { opacity: 0.6; }
-    100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
-}
-
-/* Screens */
-.screen {
-    position: absolute;
-    width: 100%; height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.8s ease;
-    pointer-events: none;
-    opacity: 0;
+    font-family: 'Roboto Mono', monospace;
+    overflow: hidden;
 }
 
-.screen.active {
-    opacity: 1;
-    pointer-events: all;
-}
-
-/* Neon Card */
-.card {
-    background: rgba(10,10,20,0.6);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(0,255,255,0.3);
-    border-radius: 20px;
-    padding: 60px 50px;
-    text-align: center;
-    box-shadow: 
-        0 0 20px rgba(0,255,255,0.5),
-        0 0 40px rgba(0,255,255,0.3),
-        inset 0 0 20px rgba(0,255,255,0.1);
-    max-width: 420px;
+.terminal {
     width: 90%;
-}
-
-.card h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 3.5em;
-    text-shadow: 
-        0 0 10px #0ff,
-        0 0 20px #0ff,
-        0 0 30px #0ff,
-        0 0 50px #0ff;
-    margin-bottom: 20px;
-}
-
-.card p {
-    font-size: 1.4em;
-    margin-bottom: 30px;
-    text-shadow: 0 0 10px #fff;
-}
-
-.card input {
-    width: 100%;
-    padding: 18px;
-    margin-bottom: 20px;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid #0ff;
-    border-radius: 10px;
-    color: #fff;
-    font-size: 1.2em;
-    box-shadow: 0 0 15px rgba(0,255,255,0.4);
-}
-
-.card button {
-    padding: 18px 50px;
-    background: transparent;
-    border: 2px solid #0ff;
-    border-radius: 50px;
-    color: #0ff;
-    font-size: 1.3em;
-    cursor: pointer;
-    text-shadow: 0 0 10px #0ff;
+    max-width: 900px;
+    height: 85vh;
+    background: #0d0d0d;
+    border-radius: 12px;
     box-shadow: 
-        0 0 20px rgba(0,255,255,0.6),
-        inset 0 0 20px rgba(0,255,255,0.2);
-    transition: 0.3s;
+        0 0 30px rgba(0, 255, 100, 0.4),
+        inset 0 0 20px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #0f0;
 }
 
-.card button:hover {
-    background: #0ff;
-    color: #000;
-    box-shadow: 0 0 40px #0ff;
+.header {
+    background: #111;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #0f0;
 }
 
-/* Main Screen */
-.header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 4em;
-    text-shadow: 
-        0 0 10px #fff,
-        0 0 20px #0ff,
-        0 0 40px #0ff,
-        0 0 60px #0ff;
-}
-
-.controls button {
-    padding: 16px 40px;
-    margin: 15px;
-    background: transparent;
-    border: 2px solid #0ff;
-    border-radius: 50px;
-    color: #0ff;
-    font-size: 1.3em;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(0,255,255,0.6);
-    transition: 0.4s;
-}
-
-.controls button:hover {
-    background: #0ff;
-    color: #000;
-    box-shadow: 0 0 50px #0ff;
-}
-
-#logout-btn {
-    position: absolute;
-    top: 30px; right: 30px;
-    padding: 12px 25px;
-    background: rgba(0,255,255,0.1);
-    border: 1px solid #0ff;
-    color: #0ff;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-    padding: 30px;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.code-card {
-    background: rgba(10,10,30,0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0,255,255,0.4);
-    border-radius: 15px;
-    padding: 25px;
-    text-align: center;
-    box-shadow: 0 0 30px rgba(0,255,255,0.3);
-}
-
-.code-card a {
-    color: #0ff;
-    font-family: monospace;
-    font-size: 1.2em;
-    text-decoration: none;
-    word-break: break-all;
-    text-shadow: 0 0 10px #0ff;
-}
-
-.code-card .status {
-    margin-top: 20px;
-    font-size: 1.6em;
+.title {
+    color: #0f9;
+    font-size: 1.1em;
     font-weight: bold;
-    text-shadow: 0 0 15px;
+    text-shadow: 0 0 10px #0f0;
 }
 
-.valid { border-color: #0f0; box-shadow: 0 0 50px #0f0; }
-.invalid { border-color: #f00; }
-.ratelimited { border-color: #ff0; }
+.indicators .dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 8px;
+}
 
-.error { color: #f66; margin-top: 20px; text-shadow: 0 0 10px #f00; }
+.red { background: #f55; box-shadow: 0 0 10px #f55; }
+.yellow { background: #ff5; box-shadow: 0 0 10px #ff5; }
+.green { background: #0f0; box-shadow: 0 0 10px #0f0; }
+
+.output {
+    flex: 1;
+    padding: 20px;
+    color: #0f9;
+    font-size: 1.1em;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.output pre {
+    margin: 0;
+}
+
+.input-bar {
+    padding: 15px 20px;
+    background: #111;
+    border-top: 1px solid #0f0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.prompt {
+    color: #0ff;
+    font-weight: bold;
+    text-shadow: 0 0 8px #0ff;
+}
+
+#amount {
+    width: 100px;
+    padding: 10px;
+    background: #000;
+    border: 1px solid #0f0;
+    color: #0f9;
+    font-family: 'Roboto Mono';
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(0, 255, 100, 0.3);
+}
+
+.input-bar button {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid #0f0;
+    color: #0f9;
+    font-family: 'Roboto Mono';
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 10px rgba(0, 255, 100, 0.3);
+}
+
+.input-bar button:hover {
+    background: #0f0;
+    color: #000;
+    box-shadow: 0 0 25px #0f0;
+}
+
+.valid { color: #0f0; text-shadow: 0 0 15px #0f0; font-weight: bold; }
+.invalid { color: #f66; }
+.ratelimited { color: #ff0; }
